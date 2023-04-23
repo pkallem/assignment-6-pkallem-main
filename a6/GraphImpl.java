@@ -130,7 +130,7 @@ public class GraphImpl implements Graph {
             if (nodeName.equals(start)) {
                 distanceMap.put(nodeName, 0.0);
             } else {
-                continue;
+                distanceMap.put(nodeName, null);
             }
         }
 
