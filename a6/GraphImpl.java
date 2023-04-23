@@ -124,32 +124,50 @@ public class GraphImpl implements Graph {
     }
 
     @Override
-    public Map<String, Double> dijkstra(String start) {
-        // Initialize distances from start node to all other nodes as infinity
+    public Map<String, Double> dijkstra(String startNode) {
         Map<String, Double> distances = new HashMap<>();
-        for (String name : nodes.keySet()) {
-            distances.put(name, Double.POSITIVE_INFINITY);
+        Set<String> visited = new HashSet<>();
+        Comparator<ShortestPathQueueObject> compare = (a, b) -> Double.compare(a.distance, b.distance);
+        PriorityQueue<ShortestPathQueueObject> queue = new PriorityQueue<>(compare);
+
+        // Set distances to all nodes to infinity except the starting node, which has distance 0.
+        for (String node : nodes.keySet()) {
+            if (node.equals(startNode)) {
+                distances.put(node, 0.0);
+            } else {
+                distances.put(node, Double.POSITIVE_INFINITY);
+            }
         }
-        distances.put(start, 0.0);
 
-        // Initialize priority queue with start node
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.add(nodes.get(start));
+        // Add the starting node to the priority queue.
+        queue.add(new ShortestPathQueueObject(startNode, 0.0));
 
-        // Run Dijkstra's algorithm
-        while (!pq.isEmpty()) {
-            Node currNode = pq.poll();
-            for (Edge edge : currNode.getAdjacentEdges()) {
-                Node adjNode = edge.getDestinationNode();
-                double newDist = distances.get(currNode.getName()) + edge.getWeight();
-                if (newDist < distances.get(adjNode.getName())) {
-                    distances.put(adjNode.getName(), newDist);
-                    pq.remove(adjNode);
-                    pq.add(adjNode);
+        // While there are still nodes to visit, keep visiting them.
+        while (!queue.isEmpty()) {
+            ShortestPathQueueObject curr = queue.poll();
+            String currNode = curr.label;
+
+            // If we've already visited this node, skip it.
+            if (visited.contains(currNode)) {
+                continue;
+            }
+
+            visited.add(currNode);
+
+            // Update the distances to all neighbors of the current node.
+            for (Edge edge : nodes.get(currNode).getAdjacentEdges()) {
+                Node neighbor = edge.getDestinationNode();
+                String neighborName = neighbor.getName();
+                double neighborDistance = distances.get(currNode) + edge.getWeight();
+
+                if (!visited.contains(neighborName) && neighborDistance < distances.get(neighborName)) {
+                    distances.put(neighborName, neighborDistance);
+                    queue.add(new ShortestPathQueueObject(neighborName, neighborDistance));
                 }
             }
         }
 
         return distances;
     }
+
 }
