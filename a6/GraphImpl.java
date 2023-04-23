@@ -129,6 +129,8 @@ public class GraphImpl implements Graph {
         for (String nodeName : nodes.keySet()) {
             if (nodeName.equals(start)) {
                 distanceMap.put(nodeName, 0.0);
+            } else {
+                continue;
             }
         }
 
