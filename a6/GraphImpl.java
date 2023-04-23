@@ -126,11 +126,12 @@ public class GraphImpl implements Graph {
     public Map<String, Double> dijkstra(String start) {
         // Initialize distance map with all nodes and infinite distances except for the start node
         Map<String, Double> distanceMap = new HashMap<>();
+
         for (String nodeName : nodes.keySet()) {
             if (nodeName.equals(start)) {
                 distanceMap.put(nodeName, 0.0);
             } else {
-                distanceMap.put(nodeName, null);
+                distanceMap.put(nodeName, Double.POSITIVE_INFINITY);
             }
         }
 
