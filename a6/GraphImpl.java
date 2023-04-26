@@ -158,6 +158,8 @@ public class GraphImpl implements Graph {
             }
         }
 
+        distanceMap.entrySet().removeIf(entry -> entry.getValue().equals(Double.POSITIVE_INFINITY));
+
         return distanceMap;
     }
 
